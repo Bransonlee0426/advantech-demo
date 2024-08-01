@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import './HomePage.scss';
 
 // 定義產品類型
 interface Product {
@@ -291,84 +291,6 @@ const products: Product[] = [
     imageUrl: 'https://irp.cdn-website.com/56869327/dms3rep/multi/ULI-361TK_BB-485USBTB2WLS-A.png',
   },
 ];
-interface FilterOptionProps {
-  label: string;
-  options: string[];
-  onChange: (value: string, checked?: boolean) => void;
-  isCheckbox?: boolean;
-}
-const FilterOption: React.FC<FilterOptionProps> = ({
-  label,
-  options,
-  onChange,
-  isCheckbox = false,
-}) => {
-  return (
-    <div className="filter-option">
-      <label className="block font-bold text-sm mb-2 text-[#434447]">{label}</label>
-      {isCheckbox ? (
-        <div>
-          {options.map((option, index) => (
-            <div key={index} className="mb-1">
-              <input
-                type="checkbox"
-                id={`${label}-${option}`}
-                className="mr-2"
-                onChange={(e) => onChange(option, e.target.checked)}
-              />
-              <label htmlFor={`${label}-${option}`} className="text-sm text-[#737B7D]">
-                {option}
-              </label>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <select
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full h-16 px-2 border border-[#CFD2D5] rounded text-base text-[#004280] bg-white focus:border-[#006EFF] focus:border-2"
-        >
-          <option value="">All</option>
-          {options.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      )}
-    </div>
-  );
-};
-
-interface ProductCardProps {
-  product: Product;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  return (
-    <div className="product-card bg-white p-3 flex flex-col items-center rounded">
-      <div className="product-image w-full h-40 relative mb-3 overflow-hidden rounded">
-        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
-      </div>
-      <div className="product-details w-full">
-        <h3 className="product-code text-2xl font-bold text-[#0C0C0C] mb-1">{product.name}</h3>
-        <p className="product-sku text-xs font-bold text-[#B6BFC1] mb-1">{product.sku}</p>
-        <p className="product-description text-sm text-[#737B7D] h-15 mb-2">
-          {product.description}
-        </p>
-        <div className="product-price text-right text-2xl font-bold text-[#E57B03] mb-2">
-          {product.price}
-        </div>
-        <button
-          className="add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300"
-          onClick={() => window.open(product.link, '_blank')}
-        >
-          SHOP NOW
-        </button>
-      </div>
-    </div>
-  );
-};
-
 interface Filters {
   upstreamUSBPort: string;
   serialStandard: string;
@@ -377,7 +299,10 @@ interface Filters {
   mounting: string[];
   protection: string[];
   usbCommunication: string[];
+  minPrice: number | string | '';
+  maxPrice: number | string | '';
 }
+
 const USBToSerialConverterGuide = () => {
   const [filters, setFilters] = useState<Filters>({
     upstreamUSBPort: '',
@@ -387,12 +312,23 @@ const USBToSerialConverterGuide = () => {
     mounting: [],
     protection: [],
     usbCommunication: [],
+    minPrice: '',
+    maxPrice: '',
   });
 
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [quantities, setQuantities] = useState<{ [key: string]: number | string | '' }>({});
+
+  const handleQuantityChange = (productSku: string, newQuantity: number | string | '') => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productSku]: newQuantity,
+    }));
+  };
 
   useEffect(() => {
     const newFilteredProducts = products.filter((product) => {
+      const productPrice = parseFloat(product.price.replace('US$', '')); // 將價格轉換為數字
       return (
         (!filters.upstreamUSBPort || product.upstreamUSBPort === filters.upstreamUSBPort) &&
         (!filters.serialStandard || product.serialStandard.includes(filters.serialStandard)) &&
@@ -404,7 +340,9 @@ const USBToSerialConverterGuide = () => {
         (filters.protection.length === 0 ||
           filters.protection.some((p) => product.protection.includes(p))) &&
         (filters.usbCommunication.length === 0 ||
-          filters.usbCommunication.includes(product.usbCommunication))
+          filters.usbCommunication.includes(product.usbCommunication)) &&
+        (filters.minPrice === '' || productPrice >= Number(filters.minPrice)) &&
+        (filters.maxPrice === '' || productPrice <= Number(filters.maxPrice))
       );
     });
     setFilteredProducts(newFilteredProducts);
@@ -425,24 +363,37 @@ const USBToSerialConverterGuide = () => {
     }));
   };
 
+  const handlePriceChange = (value: string, _checked?: boolean) => {
+    const [min, max] = value.split(',');
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: min,
+      maxPrice: max,
+    }));
+  };
+
   return (
-    <div className="max-w-[2400px] mx-auto p-12 font-['Heebo','Microsoft_JhengHei','Heiti_SC','WenQuanYi_Micro_Hei','Inter'] bg-[#F6F7F9]">
+    <div className="max-w-[2400px] mx-auto p-12 font-['Heebo','Microsoft_JhengHei','Heiti_SC','WenQuanYi_Micro_Hei','Inter'] bg-[#F6F7F9] usb-to-serial-converter-guide">
       <h1 className="text-5xl font-light mb-6 text-[#004280] font-['Montserrat','Microsoft_JhengHei','Heiti_SC','WenQuanYi_Micro_Hei']">
         USB to Serial Converter
       </h1>
 
       <div className="flex">
         {/* 選項 */}
-        <div className="filter-options w-1/4 pr-4">
+        <div className="filter-options max-w-[260px] w-1/4 pr-4">
           <FilterOption
             label="Upstream USB 2.0 Port"
             options={['B High Retention', 'Type B (Female)']}
             onChange={(value) => handleSelectChange('upstreamUSBPort', value)}
+            type="radio"
+            isUnderline={true}
           />
           <FilterOption
             label="Serial Standard"
             options={['RS-232', 'RS-422', 'RS-485', 'RS-485, 2-wire', 'RS-485, 4-wire']}
             onChange={(value) => handleSelectChange('serialStandard', value)}
+            type="radio"
+            isUnderline={true}
           />
           <FilterOption
             label="Serial Port type"
@@ -450,7 +401,8 @@ const USBToSerialConverterGuide = () => {
             onChange={(option, checked = false) =>
               handleCheckboxChange('serialPortType', option, checked)
             }
-            isCheckbox={true}
+            type="checkbox"
+            isUnderline={true}
           />
           <FilterOption
             label="Serial Port Number"
@@ -458,7 +410,8 @@ const USBToSerialConverterGuide = () => {
             onChange={(option, checked = false) =>
               handleCheckboxChange('serialPortNumber', option, checked)
             }
-            isCheckbox={true}
+            type="checkbox"
+            isUnderline={true}
           />
           <FilterOption
             label="Mounting"
@@ -466,7 +419,8 @@ const USBToSerialConverterGuide = () => {
             onChange={(option, checked = false) =>
               handleCheckboxChange('mounting', option, checked)
             }
-            isCheckbox={true}
+            type="checkbox"
+            isUnderline={true}
           />
           <FilterOption
             label="Protection"
@@ -474,7 +428,8 @@ const USBToSerialConverterGuide = () => {
             onChange={(option, checked = false) =>
               handleCheckboxChange('protection', option, checked)
             }
-            isCheckbox={true}
+            type="checkbox"
+            isUnderline={true}
           />
           <FilterOption
             label="USB Communication"
@@ -482,8 +437,10 @@ const USBToSerialConverterGuide = () => {
             onChange={(option, checked = false) =>
               handleCheckboxChange('usbCommunication', option, checked)
             }
-            isCheckbox={true}
+            type="checkbox"
+            isUnderline={true}
           />
+          <FilterOption label="Price Range" type="priceRange" onChange={handlePriceChange} />
         </div>
 
         {/* 產品 */}
@@ -491,8 +448,14 @@ const USBToSerialConverterGuide = () => {
           <div className="flex flex-wrap -mx-2">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product, index) => (
-                <div key={index} className="w-full sm:w-1/2 lg:w-1/3 p-2">
-                  <ProductCard product={product} />
+                <div key={index} className="w-full sm:w-1/2 lg:w-1/3 max-w-[260px] p-2">
+                  <ProductCard
+                    product={product}
+                    quantity={quantities[product.sku] ?? 0}
+                    onQuantityChange={(newQuantity) =>
+                      handleQuantityChange(product.sku, newQuantity)
+                    }
+                  />
                 </div>
               ))
             ) : (
@@ -503,6 +466,204 @@ const USBToSerialConverterGuide = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+interface FilterOptionProps {
+  label: string;
+  options?: string[];
+  onChange: (value: string, checked?: boolean) => void | ((min: string, max: string) => void);
+  type: 'radio' | 'checkbox' | 'priceRange';
+  isUnderline?: boolean;
+}
+const FilterOption: React.FC<FilterOptionProps> = ({
+  label,
+  options = [],
+  onChange,
+  type,
+  isUnderline = false,
+}) => {
+  const processOptions = (options: string[]) => {
+    return options.map((option) => ({
+      value: option,
+      display: option === 'B High Retention' ? 'Type B (Female), High Retention' : option,
+    }));
+  };
+  const processedOptions = processOptions(options);
+  const [selectedOption, setSelectedOption] = useState<string>(''); // 用來儲存選中的選項
+
+  const [minPrice, setMinPrice] = useState(''); // 用來儲存最小價格
+  const [maxPrice, setMaxPrice] = useState(''); // 用來儲存最大價格
+  const handlePriceChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        setter(value);
+      }
+    };
+
+  const renderOptions = () => {
+    switch (type) {
+      case 'checkbox':
+        return (
+          <div>
+            {options.map((option, index) => (
+              <div key={index} className="gap-1">
+                <input
+                  type="checkbox"
+                  id={`${label}-${option}`}
+                  className="mr-2"
+                  onChange={(e) => onChange(option, e.target.checked)}
+                />
+                <label htmlFor={`${label}-${option}`} className="text-sm text-[#737B7D]">
+                  {option}
+                </label>
+              </div>
+            ))}
+          </div>
+        );
+      case 'radio':
+        return (
+          <div className="flex flex-col flex-wrap gap-1">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio h-4 w-4 text-[#006EFF]"
+                name={label}
+                value=""
+                checked={selectedOption === ''}
+                onChange={() => {
+                  setSelectedOption('');
+                  onChange('');
+                }}
+              />
+              <span className="ml-2 text-sm text-[#004280]">全部</span>
+            </label>
+            {processedOptions.map((option, index) => (
+              <label key={index} className="inline-flex items-center">
+                <input
+                  type="radio"
+                  className="form-radio h-4 w-4 text-[#006EFF]"
+                  name={label}
+                  value={option.value}
+                  checked={selectedOption === option.value}
+                  onChange={() => {
+                    setSelectedOption(option.value);
+                    onChange(option.value);
+                  }}
+                />
+                <span className="ml-2 text-sm text-[#004280]">{option.display}</span>
+              </label>
+            ))}
+          </div>
+        );
+      case 'priceRange':
+        return (
+          <div className="flex flex-col space-y-2">
+            <div className="flex space-x-2">
+              <input
+                type="number"
+                placeholder="最小值"
+                value={minPrice}
+                onChange={handlePriceChange(setMinPrice)}
+                className="w-1/2 px-3 py-2 border border-gray-300 rounded text-sm"
+              />
+              <div className="flex items-center justify-center">
+                <span className="text-gray-500">-</span>
+              </div>
+              <input
+                type="number"
+                placeholder="最大值"
+                value={maxPrice}
+                onChange={handlePriceChange(setMaxPrice)}
+                className="w-1/2 px-3 py-2 border border-gray-300 rounded text-sm"
+              />
+            </div>
+            <button
+              className="w-full px-3 py-2 bg-[#006EFF] text-white rounded text-sm hover:bg-[#0056CC] transition-colors duration-300"
+              onClick={() => {
+                onChange(`${minPrice},${maxPrice}`);
+              }}
+            >
+              套用
+            </button>
+          </div>
+        );
+    }
+  };
+  return (
+    <div className="filter-option">
+      <label className="block font-bold text-sm leading-8 text-[#434447]">{label}</label>
+      {renderOptions()}
+      {isUnderline && <div className="border-b border-gray-300 py-2"></div>}
+    </div>
+  );
+};
+
+interface ProductCardProps {
+  product: Product;
+  quantity: number | string | '';
+  onQuantityChange: (newQuantity: number | string | '') => void;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product, quantity, onQuantityChange }) => {
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/^0+/, '').replace(/^-\d*$/, '0');
+    console.log('value', value);
+    onQuantityChange(value);
+  };
+
+  const handleBlur = () => {
+    onQuantityChange(quantity === '' ? 0 : quantity);
+  };
+
+  const incrementQuantity = () => {
+    onQuantityChange(+quantity + 1);
+  };
+
+  const decrementQuantity = () => {
+    if (+quantity > 0) {
+      onQuantityChange(+quantity - 1);
+    }
+  };
+
+  return (
+    <div className="product-card bg-white p-3 flex flex-col items-center rounded hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+      <div onClick={() => window.open(product.link, '_blank')} className="cursor-pointer">
+        <div className="product-image w-full h-40 relative mb-3 overflow-hidden rounded">
+          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+        </div>
+        <div className="product-details w-full">
+          <h3 className="product-code text-2xl font-bold text-[#0C0C0C] mb-1">{product.name}</h3>
+          <p className="product-sku text-xs font-bold text-[#B6BFC1] mb-1">{product.sku}</p>
+          <p className="product-description text-sm text-[#737B7D] min-h-16 mb-2">
+            {product.description}
+          </p>
+          <div className="product-price text-right text-2xl font-bold text-[#E57B03] mb-2">
+            {product.price}
+          </div>
+        </div>
+      </div>
+      <div className="quantity-input flex items-center mb-2 w-full">
+        <button onClick={decrementQuantity} className="bg-gray-200 px-2 py-[1px] rounded-l">
+          -
+        </button>
+        <input
+          type="number"
+          value={quantity === '' ? '' : quantity}
+          onChange={handleQuantityChange}
+          className="w-full text-center border-t border-b border-gray-200"
+          onBlur={handleBlur}
+          min="0"
+        />
+        <button onClick={incrementQuantity} className="bg-gray-200 px-2 py-[1px] rounded-r">
+          +
+        </button>
+      </div>
+      <button className="add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300">
+        Add To Cart
+      </button>
     </div>
   );
 };

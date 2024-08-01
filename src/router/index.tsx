@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useRoutes, useLocation } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
-import Books from '../components/Books';
-import Banner from '../components/Banner';
 
 export default function RouterConfig() {
   const location = useLocation();
@@ -11,10 +9,7 @@ export default function RouterConfig() {
     {
       path: '/',
       element: <HomePage />,
-      children: [
-        { index: true, element: <Banner /> },
-        { path: 'books', element: <Books /> },
-      ],
+      children: [],
     },
   ]);
 
