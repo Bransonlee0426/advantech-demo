@@ -318,6 +318,7 @@ const USBToSerialConverterGuide = () => {
 
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [quantities, setQuantities] = useState<{ [key: string]: number | string | '' }>({});
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleQuantityChange = (productSku: string, newQuantity: number | string | '') => {
     setQuantities((prev) => ({
@@ -326,26 +327,36 @@ const USBToSerialConverterGuide = () => {
     }));
   };
 
+  // 修改: 更新 useEffect 以實現淡入淡出效果
   useEffect(() => {
-    const newFilteredProducts = products.filter((product) => {
-      const productPrice = parseFloat(product.price.replace('US$', '')); // 將價格轉換為數字
-      return (
-        (!filters.upstreamUSBPort || product.upstreamUSBPort === filters.upstreamUSBPort) &&
-        (!filters.serialStandard || product.serialStandard.includes(filters.serialStandard)) &&
-        (filters.serialPortType.length === 0 ||
-          filters.serialPortType.includes(product.serialPortType)) &&
-        (filters.serialPortNumber.length === 0 ||
-          filters.serialPortNumber.includes(product.serialPortNumber)) &&
-        (filters.mounting.length === 0 || filters.mounting.includes(product.mounting)) &&
-        (filters.protection.length === 0 ||
-          filters.protection.some((p) => product.protection.includes(p))) &&
-        (filters.usbCommunication.length === 0 ||
-          filters.usbCommunication.includes(product.usbCommunication)) &&
-        (filters.minPrice === '' || productPrice >= Number(filters.minPrice)) &&
-        (filters.maxPrice === '' || productPrice <= Number(filters.maxPrice))
-      );
-    });
-    setFilteredProducts(newFilteredProducts);
+    const filterProducts = () => {
+      const newFilteredProducts = products.filter((product) => {
+        const productPrice = parseFloat(product.price.replace('US$', ''));
+        return (
+          (!filters.upstreamUSBPort || product.upstreamUSBPort === filters.upstreamUSBPort) &&
+          (!filters.serialStandard || product.serialStandard.includes(filters.serialStandard)) &&
+          (filters.serialPortType.length === 0 ||
+            filters.serialPortType.includes(product.serialPortType)) &&
+          (filters.serialPortNumber.length === 0 ||
+            filters.serialPortNumber.includes(product.serialPortNumber)) &&
+          (filters.mounting.length === 0 || filters.mounting.includes(product.mounting)) &&
+          (filters.protection.length === 0 ||
+            filters.protection.some((p) => product.protection.includes(p))) &&
+          (filters.usbCommunication.length === 0 ||
+            filters.usbCommunication.includes(product.usbCommunication)) &&
+          (filters.minPrice === '' || productPrice >= Number(filters.minPrice)) &&
+          (filters.maxPrice === '' || productPrice <= Number(filters.maxPrice))
+        );
+      });
+
+      setIsVisible(false);
+      setTimeout(() => {
+        setFilteredProducts(newFilteredProducts);
+        setIsVisible(true);
+      }, 220);
+    };
+
+    filterProducts();
   }, [filters]);
 
   const handleSelectChange = (filterName: keyof Filters, value: string) => {
@@ -445,7 +456,11 @@ const USBToSerialConverterGuide = () => {
 
         {/* 產品 */}
         <div className="products-container w-3/4 pl-4">
-          <div className="flex flex-wrap -mx-2">
+          <div
+            className={`flex flex-wrap -mx-2 transition-opacity duration-300 ${
+              isVisible ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product, index) => (
                 <div key={index} className="w-full sm:w-1/2 lg:w-1/3 max-w-[260px] p-2">
