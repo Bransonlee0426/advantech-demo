@@ -1,7 +1,7 @@
 {
   "name": "advantech-demo",
   "version": "0.1.0",
-  "homepage": "https://bransonlee0426.github.io/advantech-demo",
+  "homepage": "https://bransonlee0426.github.io/advantech-demo/usb-to-serial-converter",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",

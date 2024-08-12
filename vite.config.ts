@@ -17,7 +17,8 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     plugins: [react(), viteCompression(), JSON.parse(env.VITE_OPEN_CDN) ? buildConfig.cdn() : null],
     root: process.cwd(),
     resolve: { alias },
-    base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
+    // base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
+    base: mode.command === 'serve' ? './' : '/advantech-demo/',
     server: {
       host: '0.0.0.0',
       port: env.VITE_PORT as unknown as number,
@@ -58,7 +59,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
             }
           },
         },
-        ...(JSON.parse(env.VITE_OPEN_CDN) ? { external: buildConfig.external } : {}),
+        // ...(JSON.parse(env.VITE_OPEN_CDN) ? { external: buildConfig.external } : {}),
       },
     },
     css: { preprocessorOptions: { css: { charset: false } } },
