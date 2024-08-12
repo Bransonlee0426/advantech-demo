@@ -191,7 +191,7 @@ const USBToSerialConverterGuide = () => {
 
 // 將選項轉換為顯示的文字
 const mappingOptions: Record<string, string> = {
-  'B High Retention': 'Type B (Female), High Retention',
+  'B High Retention': 'Type B (Female) High Retention',
   'RS-4852W': 'RS-485, 2-wire',
   'RS-4854W': 'RS-485, 4-wire',
 };
@@ -336,7 +336,6 @@ const FilterOption: React.FC<FilterOptionProps> = ({
 const ProductCard: React.FC<ProductCardProps> = ({ product, quantity, onQuantityChange }) => {
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/^0+/, '').replace(/^-\d*$/, '0');
-    console.log('value', value);
     onQuantityChange(value);
   };
 
