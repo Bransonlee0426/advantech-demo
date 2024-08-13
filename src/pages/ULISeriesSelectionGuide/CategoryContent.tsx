@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CategoryContent.scss';
+import Modal from './Modal';
 
 const USBToSerialConverterGuide = () => {
   const [filters, setFilters] = useState<Filters>({
@@ -17,6 +18,19 @@ const USBToSerialConverterGuide = () => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [quantities, setQuantities] = useState<{ [key: string]: number | string | '' }>({});
   const [isVisible, setIsVisible] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const openModal = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   const handleQuantityChange = (productSku: string, newQuantity: number | string | '') => {
     setQuantities((prev) => ({
@@ -151,7 +165,6 @@ const USBToSerialConverterGuide = () => {
           />
           <FilterOption label="Price Range" type="priceRange" onChange={handlePriceChange} />
         </div>
-
         {/* 產品 */}
         <div className="products-container w-3/4 ">
           <div
@@ -174,16 +187,42 @@ const USBToSerialConverterGuide = () => {
                     onQuantityChange={(newQuantity) =>
                       handleQuantityChange(product.sku, newQuantity)
                     }
+                    onAddToCart={() => openModal(product)}
                   />
                 </div>
               ))
             ) : (
               <div className="col-span-full text-center text-2xl text-[#B6BFC1] my-8 font-light">
-                抱歉，沒有找到匹配的結果。請調整或探索其他選項
+                Sorry, no matches found. Please adjust or explore other options.
               </div>
             )}
           </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          {selectedProduct && (
+            <div className="p-5 flex flex-col items-center min-w-[400px]">
+              <h2 className="text-2xl font-bold mb-4">Added to Cart</h2>
+              <div className="w-full mb-2 flex">
+                <span className="w-1/3 text-right pr-4">Product:</span>
+                <span className="w-2/3">{selectedProduct.name}</span>
+              </div>
+              <div className="w-full mb-2 flex">
+                <span className="w-1/3 text-right pr-4">Quantity:</span>
+                <span className="w-2/3">{quantities[selectedProduct.sku] ?? 0}</span>
+              </div>
+              <div className="w-full mb-2 flex">
+                <span className="w-1/3 text-right pr-4">Price:</span>
+                <span className="w-2/3">{selectedProduct.price}</span>
+              </div>
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-white bg-[#F39800] rounded hover:bg-[#E67E00] transition duration-300 mt-4 font-bold"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );
@@ -333,7 +372,12 @@ const FilterOption: React.FC<FilterOptionProps> = ({
   );
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, quantity, onQuantityChange }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  quantity,
+  onQuantityChange,
+  onAddToCart,
+}) => {
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/^0+/, '').replace(/^-\d*$/, '0');
     onQuantityChange(value);
@@ -395,7 +439,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, quantity, onQuantity
           +
         </button>
       </div>
-      <button className="add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300">
+      <button
+        className="add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300"
+        onClick={onAddToCart}
+      >
         Add To Cart
       </button>
     </div>
@@ -412,6 +459,7 @@ interface ProductCardProps {
   product: Product;
   quantity: number | string | '';
   onQuantityChange: (newQuantity: number | string | '') => void;
+  onAddToCart: () => void;
 }
 // 定義產品類型
 interface Product {
