@@ -360,7 +360,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, quantity, onQuantity
   };
   return (
     <div className="product-card bg-white p-3 flex flex-col items-center rounded hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-      <div onClick={() => window.open(product.link, '_blank')} className="cursor-pointer">
+      <div onClick={() => (window.location.href = product.link)} className="cursor-pointer">
         <div className="product-image w-full h-40 relative mb-3 overflow-hidden rounded">
           <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
         </div>
