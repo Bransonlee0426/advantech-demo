@@ -26,8 +26,13 @@ const USBToSerialConverterGuide = () => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
+    if (selectedProduct) {
+      setQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [selectedProduct.sku]: 0,
+      }));
+    }
     setIsModalOpen(false);
     setSelectedProduct(null);
   };
@@ -440,8 +445,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </button>
       </div>
       <button
-        className="add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300"
+        className={`add-to-cart-button w-full bg-[#F39800] text-white font-bold py-2 px-4 rounded hover:bg-[#E67E00] transition duration-300 ${
+          quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
         onClick={onAddToCart}
+        disabled={quantity === 0}
       >
         Add To Cart
       </button>
