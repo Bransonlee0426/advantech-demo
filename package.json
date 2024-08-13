@@ -1,6 +1,6 @@
 {
   "name": "advantech-demo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://bransonlee0426.github.io/advantech-demo",
   "private": true,
   "dependencies": {
