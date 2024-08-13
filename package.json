@@ -26,7 +26,8 @@
   },
   "scripts": {
     "start": "vite --mode development",
-    "build": "vite build --mode production",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && vite build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

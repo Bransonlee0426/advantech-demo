@@ -2,7 +2,6 @@ import { resolve } from 'path';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 
 import viteCompression from 'vite-plugin-compression';
-import { buildConfig } from './src/utils/build';
 import react from '@vitejs/plugin-react';
 const pathResolve = (dir: string) => {
   return resolve(__dirname, '.', dir);
@@ -63,7 +62,11 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
         // ...(JSON.parse(env.VITE_OPEN_CDN) ? { external: buildConfig.external } : {}),
       },
     },
-    css: { preprocessorOptions: { css: { charset: false } } },
+    css: {
+      preprocessorOptions: {
+        css: { charset: false },
+      },
+    },
     define: {},
   };
 });
