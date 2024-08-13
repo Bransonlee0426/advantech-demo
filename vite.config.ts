@@ -18,7 +18,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     resolve: { alias },
     // base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
     // base: mode.command === 'serve' ? './' : '/advantech-demo/',
-    base: './', // 修改這行
+    base: './',
     server: {
       host: '0.0.0.0',
       port: env.VITE_PORT as unknown as number,

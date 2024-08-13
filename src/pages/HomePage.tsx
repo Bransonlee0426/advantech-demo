@@ -103,7 +103,7 @@ const CategorySubtitle = styled.h3`
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: var(--second-text-color);
+  color: var(--second-text-color, #c2cacb);
 `;
 const GridWrapper = styled.div`
   background-color: #fff;

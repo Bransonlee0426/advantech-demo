@@ -66,5 +66,5 @@ const Title = styled.h3`
 const Subtitle = styled.p`
   margin: 0;
   font-size: 0.8rem;
-  color: var(--second-text-color);
+  color: var(--second-text-color, #c2cacb);
 `;
