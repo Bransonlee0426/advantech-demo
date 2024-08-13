@@ -16,7 +16,7 @@ const USBToSerialConverterGuide = () => {
 
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [quantities, setQuantities] = useState<{ [key: string]: number | string | '' }>({});
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleQuantityChange = (productSku: string, newQuantity: number | string | '') => {
     setQuantities((prev) => ({
@@ -51,7 +51,7 @@ const USBToSerialConverterGuide = () => {
       setTimeout(() => {
         setFilteredProducts(newFilteredProducts);
         setIsVisible(true);
-      }, 220);
+      }, 200);
     };
 
     filterProducts();
