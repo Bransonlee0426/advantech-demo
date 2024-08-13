@@ -1,4 +1,3 @@
-// src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import booksSlice from '../features/books/booksSlice';
 import { useDispatch } from 'react-redux';

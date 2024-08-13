@@ -14,11 +14,12 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
 
   return {
-    plugins: [react(), viteCompression(), JSON.parse(env.VITE_OPEN_CDN) ? buildConfig.cdn() : null],
+    plugins: [react(), viteCompression()],
     root: process.cwd(),
     resolve: { alias },
     // base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
-    base: mode.command === 'serve' ? './' : '/advantech-demo/',
+    // base: mode.command === 'serve' ? './' : '/advantech-demo/',
+    base: './', // 修改這行
     server: {
       host: '0.0.0.0',
       port: env.VITE_PORT as unknown as number,
