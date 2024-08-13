@@ -37,7 +37,7 @@ import{r as h,j as e,a as R}from"./react-CMW9CHtC.js";import{c as I}from"./react
 `,V=g.p`
   margin: 0;
   font-size: 0.8rem;
-  color: var(--second-text-color);
+  color: var(--second-text-color, #c2cacb);
 `,J=""+new URL("../webp/SerialRepeaterIsolator-5jVvaE3G.webp",import.meta.url).href,X=""+new URL("../webp/USBtoSerialConverter-MGxD42Nh.webp",import.meta.url).href,ee=""+new URL("../webp/SerialtoSerialConverter-CbjAFkr2.webp",import.meta.url).href,te=""+new URL("../webp/USBHubIsolator-Clnhqb4l.webp",import.meta.url).href,re=""+new URL("../webp/SerialtoFiberConverter-sgYBsoKU.webp",import.meta.url).href,ie=""+new URL("../webp/SurgeSuppressorDataSplitterTap-D63kX5hM.webp",import.meta.url).href;function oe(){const t=y(),r=j(),o=h.useRef(null);return h.useEffect(()=>{t.pathname==="/"&&r("/usb-to-serial-converter")},[]),e.jsx("div",{children:e.jsxs(ce,{children:[e.jsxs(ae,{children:[e.jsx(ne,{children:"ULI Series Selection Guide"}),e.jsx(se,{children:"2 Steps for Selecting the Right ULI"}),e.jsx(de,{children:k.map(m=>e.jsx(z,{...m},m.route))})]}),e.jsx(F,{children:e.jsx(W,{nodeRef:o,classNames:"fade",timeout:200,children:e.jsx(me,{ref:o,children:e.jsx(le,{children:e.jsx(A,{children:k.map(m=>e.jsx(D,{path:m.route,element:m.element},m.route))})})})},t.pathname)})]})})}const k=[{image:re,title:"Serial to Fiber Converter",subtitle:"ULI-210",route:"/serial-to-fiber-converter"},{image:ee,title:"Serial to Serial Converter",subtitle:"ULI-220",route:"/serial-to-serial-converter"},{image:J,title:"Serial Repeater/Isolator",subtitle:"ULI-230",route:"/serial-repeater-isolator"},{image:ie,title:"Surge Suppressor DataSplitter/Tap",subtitle:"ULI-240/250/260",route:"/surge-suppressor-data-splitter-tap"},{image:X,title:"USB to Serial Converter",subtitle:"ULI-300",route:"/usb-to-serial-converter",element:e.jsx(L,{})},{image:te,title:"USB Hub/Isolator",subtitle:"ULI-400",route:"/usb-hub-isolator"}],ne=g.h2`
   font-size: 2rem;
   font-weight: bold;
@@ -47,7 +47,7 @@ import{r as h,j as e,a as R}from"./react-CMW9CHtC.js";import{c as I}from"./react
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: var(--second-text-color);
+  color: var(--second-text-color, #c2cacb);
 `,ae=g.div`
   background-color: #fff;
   padding: 1rem;
